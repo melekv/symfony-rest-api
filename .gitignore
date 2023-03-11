@@ -1,0 +1,6 @@
+.idea
+project/var
+project/vendor
+
+database
+logs
