@@ -2,5 +2,6 @@
 project/var
 project/vendor
 
+cache
 database
 logs

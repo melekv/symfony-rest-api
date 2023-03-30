@@ -1,7 +1,10 @@
 FROM php:8.2-fpm
 
 RUN apt update
-RUN apt install git zip unzip -y
+RUN apt install -y git zip unzip libpq-dev
+
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+  && docker-php-ext-install pdo pdo_pgsql pgsql
 
 RUN git config --global --add safe.directory /var/www/html
 RUN git config --global user.email "marekwitkowski89@gmail.com"
