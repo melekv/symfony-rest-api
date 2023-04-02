@@ -1,5 +1,11 @@
 FROM php:8.2-fpm
 
+ENV UID=1000
+ENV GID=1000
+
+RUN addgroup --gid ${GID} --system marek
+RUN adduser --gid ${GID} --system --disabled-password --shell /bin/sh --uid ${UID} marek
+
 RUN apt update
 RUN apt install -y git zip unzip libpq-dev
 
@@ -14,3 +20,5 @@ COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 
 RUN curl -1sLf https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh | bash
 RUN apt install symfony-cli -y
+
+USER marek
