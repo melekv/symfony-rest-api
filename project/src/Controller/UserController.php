@@ -4,14 +4,15 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/user', name: 'user_')]
+#[Route('api/user', name: 'user_')]
 class UserController extends AbstractController
 {
     // get all users
     #[Route('/', name: 'all', methods: ['GET'])]
-    public function users(): JsonResponse
+    public function users(Request $request): JsonResponse
     {
         return $this->json([
             'get list of users'

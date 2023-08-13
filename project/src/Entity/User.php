@@ -45,9 +45,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class)]
     private ?Collection $posts = null;
 
+    #[ORM\OneToMany(mappedBy: 'userx', targetEntity: ApiToken::class, orphanRemoval: true)]
+    private Collection $apiTokens;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->apiTokens = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,5 +162,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPosts(?Collection $posts): void
     {
         $this->posts = $posts;
+    }
+
+    /**
+     * @return Collection<int, ApiToken>
+     */
+    public function getApiTokens(): Collection
+    {
+        return $this->apiTokens;
+    }
+
+    public function addApiToken(ApiToken $apiToken): self
+    {
+        if (!$this->apiTokens->contains($apiToken)) {
+            $this->apiTokens->add($apiToken);
+            $apiToken->setUserx($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApiToken(ApiToken $apiToken): self
+    {
+        if ($this->apiTokens->removeElement($apiToken)) {
+            // set the owning side to null (unless already changed)
+            if ($apiToken->getUserx() === $this) {
+                $apiToken->setUserx(null);
+            }
+        }
+
+        return $this;
     }
 }
