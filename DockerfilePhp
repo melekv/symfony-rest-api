@@ -8,6 +8,9 @@ RUN adduser --gid ${GID} --system --disabled-password --shell /bin/sh --uid ${UI
 
 RUN apt update
 RUN apt install -y git zip unzip libpq-dev
+RUN pecl install -o -f redis \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable redis
 
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
   && docker-php-ext-install pdo pdo_pgsql pgsql

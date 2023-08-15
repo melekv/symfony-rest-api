@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Event\UserRegisteredEvent;
 use App\Exception\RegisterDataException;
 use App\Service\RegisterDataChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -17,7 +19,8 @@ class RegisterController extends AbstractController
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private EntityManagerInterface $entityManager,
-        private RegisterDataChecker $dataChecker
+        private RegisterDataChecker $dataChecker,
+        private EventDispatcherInterface $dispatcher
     ) {
     }
 
@@ -51,6 +54,10 @@ class RegisterController extends AbstractController
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        $this->dispatcher->dispatch(
+            new UserRegisteredEvent($user)
+        );
 
         return $this->json($data);
     }
