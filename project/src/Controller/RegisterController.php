@@ -7,6 +7,7 @@ use App\Event\UserRegisteredEvent;
 use App\Exception\RegisterDataException;
 use App\Service\RegisterDataChecker;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +21,8 @@ class RegisterController extends AbstractController
         private UserPasswordHasherInterface $passwordHasher,
         private EntityManagerInterface $entityManager,
         private RegisterDataChecker $dataChecker,
-        private EventDispatcherInterface $dispatcher
+        private EventDispatcherInterface $dispatcher,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -42,6 +44,8 @@ class RegisterController extends AbstractController
             $this->dataChecker->checkValidation($user);
 
         } catch (RegisterDataException $exception) {
+            $this->logger->error($exception->getMessage());
+
             return $this->json([
                 $exception->getMessage()
             ], $exception->getCode());
