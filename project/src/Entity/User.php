@@ -43,9 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $phone = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class)]
-    private ?Collection $posts = null;
+    private ?Collection $posts;
 
-    #[ORM\OneToMany(mappedBy: 'userx', targetEntity: ApiToken::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ApiToken::class, orphanRemoval: true)]
     private Collection $apiTokens;
 
     public function __construct()
